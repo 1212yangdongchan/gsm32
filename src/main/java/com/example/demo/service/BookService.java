@@ -1,11 +1,11 @@
 package com.example.demo.service;
 
-import com.example.demo.entity.Book;
-import com.example.demo.entity.BookDTO;
-import com.example.demo.entity.ReviewDTO;
+import com.example.demo.entity.*;
+import com.example.demo.payload.BookDTO;
+import com.example.demo.payload.CustomerDTO;
+import com.example.demo.payload.ReviewDTO;
 import com.example.demo.repository.BookRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,11 +23,14 @@ public class BookService {
        // 순환참조 문제를 해결 ? -> DTO
        List<Book> books=bookRepository.findAll(); // 1번 SQL
        //List<Book> books=bookRepository.findWithBookReviews();
+       //List<Book> books=bookRepository.findAllWithReviewsAndCustomer();
        System.out.print(books.size()); //5
        return books.stream().map(book->{
            //                       N+1 문제 발생?
           List<ReviewDTO> reviews=book.getReviews().stream().map((review)->{
-             return new ReviewDTO(review.getId(), review.getCost(),review.getContent(), review.getCreatedAt());
+              Customer customer = review.getCustomer();
+              CustomerDTO customerDto = new CustomerDTO(customer.getUsername(), customer.getName());
+              return new ReviewDTO(review.getId(), review.getCost(),review.getContent(), review.getCreatedAt(), customerDto);
           }).toList();
           return new BookDTO(book.getId(),book.getTitle(),book.getPrice(),book.getAuthor(),book.getPage(), reviews);
        }).toList(); // EntityManager가 실행

@@ -1,4 +1,4 @@
-package com.example.demo.entity;
+package com.example.demo.payload;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,14 +7,12 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 
-@Getter
 @Setter
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ReviewDTO {
-    private Long id;
-    private int cost;
-    private String content;
-    private LocalDateTime createdAt;
-
+public class CartDTO {
+    private int quantity;
+    private LocalDateTime cartDate;
+    private BookInfoDTO book;
 }
